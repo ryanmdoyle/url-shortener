@@ -28,6 +28,29 @@ app.get('/', function(req, res){
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
+//create schema for db structure
+const schema = new mongoose.Schema({
+  originalURL: {type: String, required: true},
+  shortURL: String
+})
+
+
+// use the schema to make a Site object to update/use
+const Site = mongoose.model("Site", schema)
+
+//function to update the db with new website
+
+function addShortURL(original, done) {
+  const shortened = original.slice(0, 5);
+  
+  const site = new Site({originalURL: original, shortURL: shortened})
+  
+  site.save(function(err, data) {
+    if (err) return(err, data);
+    return done(null, data)
+  })
+}
+
   
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
