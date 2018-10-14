@@ -21,15 +21,16 @@ app.use(bodyParser.json());
 
 const url = process.env.MONGO_URI;
 
-MongoClient.connect(url, function(err, db) {
-  if (err) console.log(err);
-  console.log("Database created!");
-  // db.createCollection('websites', (err, res) => {
-  //   if (err) console.log(err);
-  //   console.log("Collection created!");
-  //   db.close();
-  // })
-});
+// MongoClient.connect(url, function(err, db) {
+//   if (err) console.log(err);
+//   console.log("Database created!");
+//   // db.createCollection('websites', (err, res) => {
+//   //   if (err) console.log(err);
+//   //   console.log("Collection created!");
+//   //   db.close();
+//   // })
+//   db.close();
+// });
 
 app.use('/public', express.static(process.cwd() + '/public'));
 
@@ -43,7 +44,11 @@ app.get("/api/hello", function (req, res) {
   //testing here
   const testObj = {original: "https://www.google.com", short:"goo"}
   MongoClient.connect(url, (err, db) => {
-    db.collection("websites", 
+    db.collection("websites").insertOne(testObj, (err, res) => {
+      if (err) console.log(err);
+      console.log("inserted:", testObj, " to database.")
+      db.close();
+    })
   })
 });
 
