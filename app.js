@@ -13,8 +13,14 @@ const Site = mongoose.model("Site", schema)
 
 //function to update the db with new website
 
-const addShortURL = function(original, done) {
+export function addShortURL(original, done) {
   const shortened = original.slice(0, 5);
   
+  const site = new Site({originalURL: original, shortURL: shortened})
   
+  site.save(function(err, data) {
+    if (err) return(err, data);
+    return done(null, data)
+  })
 }
+
