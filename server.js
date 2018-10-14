@@ -2,7 +2,7 @@
 
 var express = require('express');
 var mongo = require('mongodb');
-var mongoose = require('mongoose');
+var MongoClient = require('mongodb').MongoClient;
 
 var cors = require('cors');
 
@@ -10,9 +10,6 @@ var app = express();
 
 // Basic Configuration 
 var port = process.env.PORT || 3000;
-
-/** this project needs a db !! **/ 
-mongoose.connect(process.env.MONGO_URI)
 
 app.use(cors());
 
@@ -22,42 +19,27 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: 'false'}));
 app.use(bodyParser.json());
 
-app.use('/public', express.static(process.cwd() + '/public'));
+const url = process.env.MONGO_URI;
 
-app.get('/', function(req, res){
-  res.sendFile(process.cwd() + '/views/index.html');
-});
-
-//create schema for db structure
-const schema = new mongoose.Schema({
-  originalURL: {type: String, required: true},
-  shortURL: String
-})
-
-
-// use the schema to make a Site object to update/use
-const Site = mongoose.model("Site", schema)
-
-//function to update the db with new website
-
-function addShortURL(original, done) {
-  const shortened = original.slice(0, 5);
+MongoClient.connect(url, function(err, db) {
+  if (err) console.log(err);
+  console.log("Database created!");
   
-  const site = new Site({originalURL: original, shortURL: shortened})
+  app.use('/public', express.static(process.cwd() + '/public'));
+
+  app.get('/', function(req, res){
+    res.sendFile(process.cwd() + '/views/index.html');
+  });
+
+  // your first API endpoint... 
+  app.get("/api/hello", function (req, res) {
+    res.json({greeting: 'hello API'});
+  });
+
+
+  app.listen(port, function () {
+    console.log('Node.js listening ...');
+  });
   
-  site.save(function(err, data) {
-    if (err) return(err, data);
-    return done(null, data)
-  })
-}
-
-  
-// your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
-});
-
-
-app.listen(port, function () {
-  console.log('Node.js listening ...');
+  // db.close();
 });
