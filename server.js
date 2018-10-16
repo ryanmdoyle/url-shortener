@@ -53,18 +53,21 @@ app.get("/api/hello", function (req, res) {
   })
 });
 
-app.post("/api/shorturl/new", (req, res) => {
+app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens it
   console.log(req.body);
   
-  const newSite
+  const newSite = req.body.url; //get the url entered into the form field with the name of "url"
+  const shortSite = newSite.slice(12, 18);
+  const newDbEntry = {original: newSite, short: shortSite};
   
-  // MongoClient.connect(url, (err, db) => {
-  //   db.collection("websites").insertOne(testObj, (err, res) => {
-  //     if (err) console.log(err);
-  //     console.log("inserted:", testObj, " to database.")
-  //     db.close();
-  //   })
-  // })
+  MongoClient.connect(url, (err, db) => {
+    db.collection("websites").insertOne(newDbEntry, (err, res) => {
+      if (err) console.log(err);
+      console.log("inserted:", newDbEntry, " to database.")
+      db.close();
+    })
+  })
+  res.send("entered", newDbEntry)
 })
 
 //create a post here, where the connection is opened (https://www.w3schools.com/nodejs/nodejs_mongodb_createcollection.asp) and edited
