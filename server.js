@@ -21,6 +21,7 @@ app.use(bodyParser.json());
 
 const url = process.env.MONGO_URI;
 
+//this is for creating the collection
 // MongoClient.connect(url, function(err, db) {
 //   if (err) console.log(err);
 //   console.log("Database created!");
@@ -51,6 +52,20 @@ app.get("/api/hello", function (req, res) {
     })
   })
 });
+
+app.post("/api/shorturl/new", (req, res) => {
+  console.log(req.body);
+  
+  const newSite
+  
+  // MongoClient.connect(url, (err, db) => {
+  //   db.collection("websites").insertOne(testObj, (err, res) => {
+  //     if (err) console.log(err);
+  //     console.log("inserted:", testObj, " to database.")
+  //     db.close();
+  //   })
+  // })
+})
 
 //create a post here, where the connection is opened (https://www.w3schools.com/nodejs/nodejs_mongodb_createcollection.asp) and edited
 
