@@ -70,7 +70,6 @@ app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens
   res.send("entered", newDbEntry)
 })
 
-//create a post here, where the connection is opened (https://www.w3schools.com/nodejs/nodejs_mongodb_createcollection.asp) and edited
 
 app.listen(port, function () {
   console.log('Node.js listening ...');
