@@ -74,7 +74,7 @@ app.get("/api/shorturl/:site", (req, res) => {
   if (req.params.site === "test") {
     
     MongoClient.connect(url, (err, db) => {
-      const cursor = db.collection("websites").find({"original":"https://www.google.com"});
+      const cursor = db.collection("websites").find({"original":"https://www.google.com"}).count();
       res.send({"hi": `${cursor}`});
       db.close();
     })
