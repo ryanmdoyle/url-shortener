@@ -72,12 +72,8 @@ app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens
 
 app.get("/api/shorturl/:site", (req, res) => {
   if (req.params.site === "test") {
-    MongoClient.connect(url, (err, db) => {
-      const cursor = db.collection("websites").find({"original":"https://www.google.com"});
-      console.log(cursor);
-      res.send(cursor);
-      db.close();
-    })
+    
+  
   }
 })
 
