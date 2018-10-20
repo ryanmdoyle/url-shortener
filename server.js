@@ -78,7 +78,7 @@ app.get("/api/shorturl/:site", (req, res) => {
       cursor.forEach((doc, err) => {
         queryResults.push(doc);
       })
-      res.send({"hi": queryResults});
+      res.send({"hi": "kjhg"});
       db.close();
     })
       
