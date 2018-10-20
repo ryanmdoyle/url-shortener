@@ -72,10 +72,13 @@ app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens
 
 app.get("/api/shorturl/:site", (req, res) => {
   if (req.params.site === "test") {
-    
+    const queryResults = [];
     MongoClient.connect(url, (err, db) => {
-      const cursor = db.collection("websites").find({"original":"https://www.google.com"}).count();
-      res.send({"hi": `${cursor}`});
+      const cursor = db.collection("websites").find({"original":"https://www.google.com"});
+      cursor.forEach((doc, err) => {
+        queryResults.push(doc);
+      })
+      res.send({"hi": queryResults});
       db.close();
     })
       
