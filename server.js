@@ -70,6 +70,16 @@ app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens
   res.send("entered", newDbEntry)
 })
 
+app.get("/api/shorturl/:site", (req, res) => {
+  MongoClient.connect(url, (err, db) => {
+    db.collection("websites").findnewDbEntry, (err, res) => {
+      if (err) console.log(err);
+      console.log("inserted:", newDbEntry, " to database.")
+      db.close();
+    })
+  })
+})
+
 
 app.listen(port, function () {
   console.log('Node.js listening ...');
