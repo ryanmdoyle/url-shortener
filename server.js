@@ -78,31 +78,26 @@ app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens
   res.send("entered", newDbEntry)
 })
 
+
+
+
 //ROUTE based on entry.
-app.get("/api/shorturl/test", (req, res) => {
+app.get("/api/shorturl/:site", (req, res) => {
   
   client.connect(function(err) {
     assert.equal(null, err);
     console.log("Connected successfully to server");
 
     const db = client.db(dbName);
-    // findDocuments(db, function() {
-    //   client.close();
-    // })
+    const query = {"short": req.params.site}
+    findDocuments(db, query, function(results) {
+      res.send(results)
+      client.close();
+    })
     
-    const collection = db.collection('websites');
-  
-    // Find some documents
-    collection.find({"original": req.params.site }).toArray(function(err, docs) {
-      assert.equal(err, null);
-      console.log("Found the following records");
-      console.log(docs)
-      callback(docs); //what the actual fuck is going on
-    });
-
-    client.close();
+    client.close()
   });
-  res.send({"status":"working"})
+  res.send({"Original NOT Found":"oops!"})
   
 })
 
@@ -111,12 +106,12 @@ app.listen(port, function () {
   console.log('Node.js listening ...');
 });
 
-const findDocuments = function(db, site, callback) { //modifying to take site as a req param
+const findDocuments = function(db, query, callback) { //modifying to take site as a req param
   // Get the websites collection
   const collection = db.collection('websites');
   
   // Find some documents
-  collection.find({"original": req.params.site }).toArray(function(err, docs) {
+  collection.find(query).toArray(function(err, docs) {
     assert.equal(err, null);
     console.log("Found the following records");
     console.log(docs)
