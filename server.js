@@ -73,15 +73,17 @@ app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens
 app.get("/api/shorturl/:site", (req, res) => {
   const queryResults = [];
   if (req.params.site === "test") {
-
-    MongoClient.connect(url, (err, db) => {
-      const cursor = db.collection("websites").find({"original":"https://www.google.com"});
-      cursor.forEach((doc, err) => {
+    MongoClient.connect(url, async (err, client) => {
+      const db = client.db("websites");
+      const cursor = db.collection("websites").find();
+      cursor.forEach(await function(doc, err) {
         queryResults.push(doc);
-      }, () => {
-        res.send({"hi": queryResults});
-        db.close();
       })
+      
+      function respond() {
+        res.send({"hi": queryResults});
+        client.close();
+      }
     })
       
   }
