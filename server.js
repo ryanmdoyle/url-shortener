@@ -3,6 +3,7 @@
 var express = require('express');
 var mongo = require('mongodb');
 var MongoClient = require('mongodb').MongoClient;
+const assert = require('assert');
 
 var cors = require('cors');
 
@@ -19,7 +20,10 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: 'false'}));
 app.use(bodyParser.json());
 
+// DATABASE Setup
 const url = process.env.MONGO_URI;
+const client = new MongoClient(url);
+const dbName = "websites";
 
 //this is for creating the collection
 // MongoClient.connect(url, function(err, db) {
@@ -53,6 +57,8 @@ app.get("/api/hello", function (req, res) {
   })
 });
 
+
+//ADD new db entry
 app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens it
   console.log(req.body);
   
@@ -70,26 +76,11 @@ app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens
   res.send("entered", newDbEntry)
 })
 
+
 app.get("/api/shorturl/:site", (req, res) => {
   const queryResults = [];
-  if (req.params.site === "test") {
-    MongoClient.connect(url, async (err, client) => {
-      const db = client.db("websites");
-      const cursor = db.collection("websites").find();
-      cursor.forEach(await function(doc, err) {
-        queryResults.push(doc);
-      })
-      
-      function respond() {
-        res.send({"hi": queryResults});
-        client.close();
-      }
-    })
-      
-  }
-    
-  }
-)
+  
+})
 
 
 app.listen(port, function () {
