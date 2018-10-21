@@ -81,7 +81,7 @@ app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens
 
 app.get("/api/shorturl/test", (req, res) => {
   
-  client.connect(url, (err, client) {
+  client.connect(url, function(err, client) {
     assert.equal(null, err);
     console.log("connected correctly to server");
     
