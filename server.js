@@ -8,7 +8,7 @@ const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 const url = process.env.MONGO_URI;
 const client = new MongoClient(url);
-const dbName = "websites";
+const dbName = "fcc-projects";
 
 const cors = require('cors');
 
@@ -60,7 +60,7 @@ app.get("/api/hello", function (req, res) {
 });
 
 
-//ADD new db entry
+//ADD new db entry  ************** NEEDS TO BE FIXED *****************
 app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens it
   console.log(req.body);
   
@@ -78,17 +78,21 @@ app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens
   res.send("entered", newDbEntry)
 })
 
-
+//ROUTE based on entry.
 app.get("/api/shorturl/test", (req, res) => {
   
   client.connect(function(err) {
-  assert.equal(null, err);
-  console.log("Connected successfully to server");
+    assert.equal(null, err);
+    console.log("Connected successfully to server");
 
-  const db = client.db(dbName);
+    const db = client.db(dbName);
+    findDocuments(db, function() {
+      client.close();
+    })
 
-  client.close();
-});
+    client.close();
+  });
+  res.send({"status":"working"})
   
 })
 
@@ -96,3 +100,16 @@ app.get("/api/shorturl/test", (req, res) => {
 app.listen(port, function () {
   console.log('Node.js listening ...');
 });
+
+const findDocuments = function(db, site, callback) { //modifying to take site as a req param
+  // Get the websites collection
+  const collection = db.collection('websites');
+  
+  // Find some documents
+  collection.find({"original": req.params.site}).toArray(function(err, docs) {
+    assert.equal(err, null);
+    console.log("Found the following records");
+    console.log(docs)
+    callback(docs);
+  });
+}
