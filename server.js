@@ -90,15 +90,12 @@ app.get("/api/shorturl/:site", (req, res) => {
 
     const db = client.db(dbName);
     const query = {"short": req.params.site}
-    findDocuments(db, query, function(results) {
-      res.send(results)
+    findDocuments(db, query, function(results) { //this works!  It will return the results of the database entry  --> TODO --> make it reroute instead.  DONE!!!!!!!
+      res.redirect(results[0].original);
       client.close();
     })
-    
     client.close()
-  });
-  res.send({"Original NOT Found":"oops!"})
-  
+  });  
 })
 
 
@@ -106,6 +103,8 @@ app.listen(port, function () {
   console.log('Node.js listening ...');
 });
 
+
+//function that takes a query of the req.params and returns the results for a callback to use. (used above)
 const findDocuments = function(db, query, callback) { //modifying to take site as a req param
   // Get the websites collection
   const collection = db.collection('websites');
