@@ -86,9 +86,19 @@ app.get("/api/shorturl/test", (req, res) => {
     console.log("Connected successfully to server");
 
     const db = client.db(dbName);
-    findDocuments(db, function() {
-      client.close();
-    })
+    // findDocuments(db, function() {
+    //   client.close();
+    // })
+    
+    const collection = db.collection('websites');
+  
+    // Find some documents
+    collection.find({"original": req.params.site }).toArray(function(err, docs) {
+      assert.equal(err, null);
+      console.log("Found the following records");
+      console.log(docs)
+      callback(docs); //what the actual fuck is going on
+    });
 
     client.close();
   });
@@ -106,7 +116,7 @@ const findDocuments = function(db, site, callback) { //modifying to take site as
   const collection = db.collection('websites');
   
   // Find some documents
-  collection.find({"original": req.params.site}).toArray(function(err, docs) {
+  collection.find({"original": req.params.site }).toArray(function(err, docs) {
     assert.equal(err, null);
     console.log("Found the following records");
     console.log(docs)
