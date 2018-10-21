@@ -1,17 +1,23 @@
 'use strict';
 
-var express = require('express');
-var mongo = require('mongodb');
-var MongoClient = require('mongodb').MongoClient;
+const express = require('express');
+
+// DATABASE Setup
+const mongo = require('mongodb');
+const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
+const url = process.env.MONGO_URI;
+const client = new MongoClient(url);
+const dbName = "websites";
 
-var cors = require('cors');
+const cors = require('cors');
 
-var app = express();
+const app = express();
 
 // Basic Configuration 
-var port = process.env.PORT || 3000;
+let port = process.env.PORT || 3000;
 
+//MIDDLEWARE
 app.use(cors());
 
 /** this project needs to parse POST bodies **/
@@ -20,10 +26,8 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: 'false'}));
 app.use(bodyParser.json());
 
-// DATABASE Setup
-const url = process.env.MONGO_URI;
-const client = new MongoClient(url);
-const dbName = "websites";
+app.use('/public', express.static(process.cwd() + '/public'));
+
 
 //this is for creating the collection
 // MongoClient.connect(url, function(err, db) {
@@ -36,8 +40,6 @@ const dbName = "websites";
 //   // })
 //   db.close();
 // });
-
-app.use('/public', express.static(process.cwd() + '/public'));
 
 app.get('/', function(req, res){
   res.sendFile(process.cwd() + '/views/index.html');
@@ -78,7 +80,14 @@ app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens
 
 
 app.get("/api/shorturl/:site", (req, res) => {
-  const queryResults = [];
+  client.connect(url, (err, client) => {
+    assert.equal(null, err);
+    console.log("connected correctly to server");
+    
+    const db = client.db(dbName);
+    
+    const col = db.collection("
+  })
   
 })
 
