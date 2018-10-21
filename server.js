@@ -81,21 +81,14 @@ app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens
 
 app.get("/api/shorturl/test", (req, res) => {
   
-  client.connect(url, function(err, client) {
-    assert.equal(null, err);
-    console.log("connected correctly to server");
-    
-    const db = client.db(dbName);
-    
-    const col = db.collection("websites");
-    
-    col.find().limit(3).toArray((err, docs) => {
-      assert.equal(null, err);
-      assert.equal(3, docs.length);
-      console.log(docs);
-      client.close();
-    })
-  })
+  client.connect(function(err) {
+  assert.equal(null, err);
+  console.log("Connected successfully to server");
+
+  const db = client.db(dbName);
+
+  client.close();
+});
   
 })
 
