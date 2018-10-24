@@ -66,6 +66,7 @@ app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens
   
   const newSite = req.body.url; //get the url entered into the form field with the name of "url"
   const shortSite = newSite.slice(12, 18);
+  
   const newDbEntry = {original: newSite, short: shortSite};
   
   MongoClient.connect(url, (err, db) => {
