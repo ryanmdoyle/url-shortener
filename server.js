@@ -66,14 +66,18 @@ app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens
   
   const newSite = req.body.url; //get the url entered into the form field with the name of "url"
   const shortSite = newSite.slice(12, 18);
-  
   const newDbEntry = {original: newSite, short: shortSite};
   
-  MongoClient.connect(url, (err, db) => {
+  client.connect((err, client) => {
+    assert.equal(null, err);
+    console.log("Correctly connected to server");
+    
+    const db = client.db(dbName);
+    
     db.collection("websites").insertOne(newDbEntry, (err, res) => {
-      if (err) console.log(err);
-      console.log("inserted:", newDbEntry, " to database.")
-      db.close();
+      assert.equal(null, err);
+      assert.equal(1, res.insertedCount);
+      client.close();
     })
   })
   res.send("entered", newDbEntry)
