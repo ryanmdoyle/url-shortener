@@ -80,11 +80,8 @@ app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens
       client.close();
     })
   })
-  res.send("entered", newDbEntry)
+  res.send({"entered": newDbEntry})
 })
-
-
-
 
 //ROUTE based on entry.
 app.get("/api/shorturl/:site", (req, res) => {
