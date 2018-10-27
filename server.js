@@ -10,12 +10,6 @@ const url = process.env.MONGO_URI;
 const client = new MongoClient(url);
 const dbName = "fcc-projects";
 
-//Prevents timout for MongoDB
-const options = {
-  server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
-  replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
-};
-
 const cors = require('cors');
 
 const app = express();
