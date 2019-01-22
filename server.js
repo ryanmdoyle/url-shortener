@@ -3,18 +3,14 @@
 const express = require('express');
 
 // DATABASE Setup
-const mongo = require('mongodb');
-const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
-const url = process.env.MONGO_URI;
-const client = new MongoClient(url);
-const dbName = "fcc-projects";
 const mongoose = require('mongoose');
 const uniqueSlug = require('unique-slug')
 
 const cors = require('cors');
 
 const app = express();
+mongoose.connect(process.env.SRVADDRESS, {useNewUrlParser: true});
 
 ///////////////////////////////////////////
 /////////////   MONGO SETUP
@@ -48,8 +44,12 @@ app.get('/', function(req, res){
 
 app.post('/:newurl/api/shorturl/new', async (req, res) => {
   const slug = uniqueSlug(req.params.newurl);
-  
-}
+  const newSite = await new URL({
+    original_url: req.body.original_url,
+    short_url: slug
+  }).save();
+  res.json(newSite);
+});
 
 app.listen(port, function () {
   console.log('Node.js listening ...');
