@@ -6,6 +6,7 @@ const express = require('express');
 const assert = require('assert');
 const mongoose = require('mongoose');
 const uniqueSlug = require('unique-slug')
+const dns = require('dns');
 
 const cors = require('cors');
 
@@ -53,8 +54,16 @@ app.post('/api/shorturl/new', async (req, res) => {
     original_url: req.body.url,
     short_url: slug
   })
+  dns.lookup(req.body.url, () => {
+    
+  })
   newSite.save();
   res.send(newSite);
+});
+
+app.get('/api/shorturl/:short', async (req, res) => {
+  const site = await URL.findOne({short_url: req.params.short});
+  res.redirect(site.original_url);
 });
 
 app.listen(port, function () {
