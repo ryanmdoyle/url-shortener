@@ -46,45 +46,10 @@ app.get('/', function(req, res){
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
-
-// your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
-  //testing here
-  const testObj = {original: "https://www.google.com", short:"goo"}
-  MongoClient.connect(url, (err, db) => {
-    db.collection("websites").insertOne(testObj, (err, res) => {
-      if (err) console.log(err);
-      console.log("inserted:", testObj, " to database.")
-      db.close();
-    })
-  })
-});
-
-
-//ADD new db entry  ************** NEEDS TO BE FIXED *****************
-app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens it
-
-  res.send({"entered": newDbEntry})
-})
-
-//ROUTE based on entry.
-app.get("/api/shorturl/:site", (req, res) => {
+app.post('/:newurl/api/shorturl/new', async (req, res) => {
+  const slug = uniqueSlug(req.params.newurl);
   
-  client.connect(function(err) {
-    assert.equal(null, err);
-    console.log("Connected successfully to server");
-
-    const db = client.db(dbName);
-    const query = {"short": req.params.site}
-    findDocuments(db, query, function(results) { //this works!  It will return the results of the database entry  --> TODO --> make it reroute instead.  DONE!!!!!!!
-      res.redirect(results[0].original);
-      client.close();
-    })
-    client.close()
-  });  
-})
-
+}
 
 app.listen(port, function () {
   console.log('Node.js listening ...');
