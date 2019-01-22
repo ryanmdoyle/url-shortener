@@ -42,13 +42,13 @@ app.get('/', function(req, res){
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
-app.post('/:newurl/api/shorturl/new', async (req, res) => {
-  const slug = uniqueSlug(req.params.newurl);
+app.post('/api/shorturl/new', async (req, res) => {
+  const slug = uniqueSlug(req.body.original_url);
   const newSite = await new URL({
     original_url: req.body.original_url,
     short_url: slug
   }).save();
-  res.json(newSite);
+  res.send(newSite);
 });
 
 app.listen(port, function () {
