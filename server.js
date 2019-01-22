@@ -42,12 +42,18 @@ app.get('/', function(req, res){
   res.sendFile(process.cwd() + '/views/index.html');
 });
 
+app.get('/all', async (req, res) => {
+  const links = await URL.find({});
+  res.send(links);
+});
+
 app.post('/api/shorturl/new', async (req, res) => {
-  const slug = uniqueSlug(req.body.original_url);
+  const slug = uniqueSlug(req.body.url);
   const newSite = await new URL({
-    original_url: req.body.original_url,
+    original_url: req.body.url,
     short_url: slug
-  }).save();
+  })
+  newSite.save();
   res.send(newSite);
 });
 
