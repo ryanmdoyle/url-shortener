@@ -9,10 +9,23 @@ const assert = require('assert');
 const url = process.env.MONGO_URI;
 const client = new MongoClient(url);
 const dbName = "fcc-projects";
+const mongoose = require('mongoose');
+const uniqueSlug = require('unique-slug')
 
 const cors = require('cors');
 
 const app = express();
+
+///////////////////////////////////////////
+/////////////   MONGO SETUP
+
+const Schema = mongoose.Schema;
+const urlSchema = new Schema({
+    original_url: String,
+    short_url: String,
+});
+
+const URL = new mongoose.model('URL', urlSchema);
 
 // Basic Configuration 
 let port = process.env.PORT || 3000;
@@ -29,21 +42,10 @@ app.use(bodyParser.json());
 app.use('/public', express.static(process.cwd() + '/public'));
 
 
-//this is for creating the collection
-// MongoClient.connect(url, function(err, db) {
-//   if (err) console.log(err);
-//   console.log("Database created!");
-//   // db.createCollection('websites', (err, res) => {
-//   //   if (err) console.log(err);
-//   //   console.log("Collection created!");
-//   //   db.close();
-//   // })
-//   db.close();
-// });
-
 app.get('/', function(req, res){
   res.sendFile(process.cwd() + '/views/index.html');
 });
+
 
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
@@ -62,24 +64,7 @@ app.get("/api/hello", function (req, res) {
 
 //ADD new db entry  ************** NEEDS TO BE FIXED *****************
 app.post("/api/shorturl/new", (req, res) => { //takes website input and shortens it
-  console.log(req.body);
-  
-  const newSite = req.body.url; //get the url entered into the form field with the name of "url"
-  const shortSite = newSite.slice(12, 18);
-  const newDbEntry = {original: newSite, short: shortSite};
-  
-  client.connect((err, client) => {
-    assert.equal(null, err);
-    console.log("Correctly connected to server");
-    
-    const db = client.db(dbName);
-    
-    db.collection("websites").insertOne(newDbEntry, (err, res) => {
-      assert.equal(null, err);
-      assert.equal(1, res.insertedCount);
-      client.close();
-    })
-  })
+
   res.send({"entered": newDbEntry})
 })
 
