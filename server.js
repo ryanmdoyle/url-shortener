@@ -49,16 +49,21 @@ app.get('/all', async (req, res) => {
 });
 
 app.post('/api/shorturl/new', async (req, res) => {
-  const slug = uniqueSlug(req.body.url);
-  const newSite = await new URL({
-    original_url: req.body.url,
-    short_url: slug
-  })
-  dns.lookup(req.body.url, () => {
-    
+  
+  dns.lookup(req.body.url, async (err) => {
+    if (err) {
+      res.json({"error":"invalid URL"});
+    } else {
+      const slug = uniqueSlug(req.body.url);
+      const newSite = await new URL({
+      original_url: req.body.url,
+      short_url: slug
   })
   newSite.save();
   res.send(newSite);
+    }
+  })
+  
 });
 
 app.get('/api/shorturl/:short', async (req, res) => {
